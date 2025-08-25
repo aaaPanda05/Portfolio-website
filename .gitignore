@@ -1,0 +1,8 @@
+# Node (React frontend)
+client/node_modules/
+client/build/
+client/.env
+
+# PHP (backend)
+server/vendor/
+server/.env

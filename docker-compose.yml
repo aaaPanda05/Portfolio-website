@@ -1,0 +1,55 @@
+version: "3.9"
+
+services:
+  backend:
+    container_name: backend_service
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    volumes:
+      - ./server:/var/www/html
+    ports:
+      - "5000:80"
+    depends_on:
+      - db
+
+  frontend:
+    container_name: frontend_service
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    volumes:
+      - ./client:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: appdb
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppass
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin_service
+    restart: always
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: rootpass
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+
+volumes:
+  db_data:
