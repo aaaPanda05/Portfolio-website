@@ -5,4 +5,4 @@ client/.env
 
 # PHP (backend)
 server/vendor/
-server/.env
+server/config/.env
