@@ -4,19 +4,27 @@ namespace App\Types;
 
 
 class Routes {
-    // Routes with default method (index)
+    // GET routes
     public const TEST       = 'test';
-    public const LOGIN          = 'login';
 
-    // Routes with explicit methods
-    public const LOGIN_USER     = 'login/user';
+    // POST routes
+    public const LOGIN          = 'login';
 
     // Map URLs to controller class and method
     public static function map(): array {
         return [
-            self::TEST        => [\App\Controllers\TestController::class, 'index'],
-            self::LOGIN           => [\App\Controllers\LoginController::class, 'index'],
-            self::LOGIN_USER      => [\App\Controllers\LoginController::class, 'user'],
+            //Fetching data
+            "GET" => [
+                self::TEST        => [\App\Controllers\TestController::class, 'index']
+            ],
+            //Sends data
+            "POST" => [
+                self::LOGIN           => [\App\Controllers\LoginController::class, 'index']
+            ],
+            //Updating data
+            "PUT" => [],
+            //Deleting data
+            "DELETE" => []
         ];
     }
 

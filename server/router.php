@@ -11,6 +11,6 @@ $dotenv->load();
 require __DIR__ . '/config/config.php';
 
 $url = isset($_GET['url']) ? rtrim($_GET['url'], '/') : 'register';
-
+$method = $_SERVER['REQUEST_METHOD'];
 $router = new RouterController();
-$router->handleRequest($url);
+$router->handleRequest($url, $method);
