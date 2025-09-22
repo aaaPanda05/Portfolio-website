@@ -5,7 +5,7 @@ namespace App\Types;
 
 class Routes {
     // GET routes
-    public const TEST       = 'test';
+    public const GENERATOR       = 'generator';
 
     // POST routes
     public const LOGIN          = 'login';
@@ -15,7 +15,7 @@ class Routes {
         return [
             //Fetching data
             "GET" => [
-                self::TEST        => [\App\Controllers\TestController::class, 'index']
+                self::GENERATOR        => [\App\Controllers\GeneratorController::class, 'index']
             ],
             //Sends data
             "POST" => [
