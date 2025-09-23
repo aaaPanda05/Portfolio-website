@@ -4,33 +4,42 @@ namespace App\Types;
 
 
 class Routes {
-    // GET routes
-    public const GENERATOR       = 'generator';
+    //Default functions from controllers
+    public static array $methodsRequest = [
+        "selectAll" => "GET",
+        "select"    => "GET",
+        "delete"    => "DELETE"
+    ]
 
-    // POST routes
-    public const LOGIN          = 'login';
+    //Routes for certain methods
+    public static array $routes = [
+        "GET" => [],
+        "POST" => [],
+        "PUT" => [],
+        "DELETE" => []
+    ];
 
-    // Map URLs to controller class and method
-    public static function map(): array {
-        return [
-            //Fetching data
-            "GET" => [
-                self::GENERATOR        => [\App\Controllers\GeneratorController::class, 'index']
-            ],
-            //Sends data
-            "POST" => [
-                self::LOGIN           => [\App\Controllers\LoginController::class, 'index']
-            ],
-            //Updating data
-            "PUT" => [],
-            //Deleting data
-            "DELETE" => []
-        ];
-    }
+    private static function generateRoutes($className) {
+        $classMethods = get_class_methods($className);
 
-    // Return all paths
-    public static function all(): array {
-        return array_keys(self::map());
+        // Get short class name and strip 'Controller' 
+        $shortName = (new \ReflectionClass($className))->getShortName();
+        if (str_ends_with($shortName, 'Controller')) {
+            $shortName = substr($shortName, 0, -strlen('Controller'));
+        }
+
+        $shortName = strtolower($shortName); 
+
+        foreach ($classMethods as $classMethod) {
+            if (isset(self::$methodsRequest[$classMethod])) {
+                $httpMethod = self::$methodsRequest[$classMethod];
+
+                // Route key: controller/method 
+                $routeKey = $shortName . '/' . strtolower($classMethod);
+
+                self::$routes[$httpMethod][$routeKey] = [$className, $classMethod];
+            }
+        }
     }
 }
 ?>

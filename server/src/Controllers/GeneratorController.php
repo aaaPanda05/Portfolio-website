@@ -6,6 +6,7 @@ class GeneratorController {
     private $modelDir;
     private $controllerDir;
     private $routeFile;
+    private $data;
 
     public function __construct() {
         $this->modelDir = realpath(__DIR__ . '/../Models') . '/';
@@ -14,17 +15,17 @@ class GeneratorController {
     }
 
     public function generate() {
-        $data = json_decode(file_get_contents("php://input"), true);
+        $this->data = json_decode(file_get_contents("php://input"), true);
 
-        if (!$data) {
+        if (!$this->data) {
             http_response_code(400);
             echo json_encode(["error" => "Invalid JSON"]);
             return;
         }
 
-        $this->generateModels($data['models'] ?? []);
-        $this->generateControllers($data['controllers'] ?? []);
-        $this->generateRoutes($data['routes'] ?? []);
+        $this->generateModels($this->data['models'] ?? []);
+        $this->generateControllers($this->data['controllers'] ?? []);
+        $this->generateRoutes($this->data['routes'] ?? []);
 
         echo json_encode(["status" => "ok", "message" => "Files generated successfully!"]);
     }
@@ -32,37 +33,24 @@ class GeneratorController {
     private function generateModels($models) {
         foreach ($models as $model) {
             $className = ucfirst($model['name']);
-            $fields = $model['fields'] ?? [];
+            $tableName = $model['tableName'];
 
-            $properties = "";
-            foreach ($fields as $field) {
-                $properties .= "    public \$$field;\n";
-            }
-
-            $template = "<?php\n\nclass $className {\n$properties\n    public function __construct(\$data = []) {\n";
-            foreach ($fields as $field) {
-                $template .= "        \$this->$field = \$data['$field'] ?? null;\n";
-            }
-            $template .= "    }\n}\n";
+            $template = "<?php\n\nnamespace App\Models;\n\nuse App\Models\Model;\n\nclass $className extends Model\n{\n    protected static \$table = '$tableName';\n    protected static \$primaryKey = 'id';\n}\n";
 
             file_put_contents($this->modelDir . $className . ".php", $template);
         }
     }
 
     private function generateControllers($controllers) {
-        foreach ($controllers as $controller) {
-            $className = ucfirst($controller['name']);
-            $methods = $controller['methods'] ?? ["index"];
-
-            $methodsCode = "";
-            foreach ($methods as $method) {
-                $methodsCode .= "    public function $method() {\n        // TODO: implement $method\n    }\n\n";
-            }
-
-            $template = "<?php\n\nclass $className {\n\n$methodsCode}\n";
-            file_put_contents($this->controllerDir . $className . ".php", $template);
-        }
+    foreach ($controllers as $controller) {
+        $className = ucfirst($controller['name']);
+        $modelClass = "\\App\\Models\\" . $className;
+        $controllerClassName = $className . "Controller";
+        $template = "<?php\nnamespace App\Controllers;\n\nuse App\Controllers\Controller;\n\nclass $controllerClassName extends Controller {\n\npublic function __construct() {\nparent::__construct($modelClass);\n}\n\n}\n";
+        file_put_contents($this->controllerDir . $controllerClassName . ".php", $template);
     }
+}
+
 
     private function generateRoutes($routes) {
         $routeLines = "";
@@ -74,5 +62,29 @@ class GeneratorController {
         }
 
         file_put_contents($this->routeFile, $routeLines, FILE_APPEND);
+    }
+
+    private function generateBasicMethods($name) {
+        
+    }
+
+    public function selectAll() {
+
+    }
+
+    public function select($id) {
+
+    }
+
+    public function create() {
+
+    }
+
+    public function update($id = null) {
+
+    }
+
+    public function delete($id = null) {
+
     }
 }
