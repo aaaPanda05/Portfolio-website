@@ -11,13 +11,12 @@ abstract class Controller {
     }
 
     public function selectAll() {
-        return echo json_encode($this->model::all()); 
-    
+        echo json_encode($this->model::all()); 
     }
 
     public function select() {
         $this->data = json_decode(file_get_contents("php://input"), true);
-        return echo json_encode($this->model::find($this->data['id']));
+        echo json_encode($this->model::find($this->data['id']));
     }
 
     public function delete() {
@@ -26,13 +25,16 @@ abstract class Controller {
         $id = $this->data['id'] ?? null;
 
         if (!$id) {
-            return ['success' => false, 'message' => 'No ID provided'];
+            echo json_encode(['success' => false, 'message' => 'No ID provided']);
+            return;
         }
 
         $deleted = $this->model::delete($id);
 
-        return $deleted
-            ? echo json_encode(['success' => true, 'message' => 'Deleted successfully'])
-            : echo json_encode(['success' => false, 'message' => 'Delete failed']);
+        if ($deleted) {
+            echo json_encode(['success' => true, 'message' => 'Deleted successfully']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Delete failed']);
+        }
     }
 }

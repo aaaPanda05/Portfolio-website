@@ -1,17 +1,19 @@
 <?php
 namespace App\Controllers;
 
+use App\Types\Routes;
+
 class GeneratorController {
 
     private $modelDir;
     private $controllerDir;
-    private $routeFile;
+    private $routeCacheFile;
     private $data;
 
     public function __construct() {
         $this->modelDir = realpath(__DIR__ . '/../Models') . '/';
         $this->controllerDir = realpath(__DIR__ . '/../Controllers') . '/';
-        $this->routeFile = realpath(__DIR__ . '/../Routes') . '/web.php';
+        $this->routeCacheFile = realpath(__DIR__ . '/../Routes') . '/routes_cache.php';
     }
 
     public function generate() {
@@ -25,66 +27,96 @@ class GeneratorController {
 
         $this->generateModels($this->data['models'] ?? []);
         $this->generateControllers($this->data['controllers'] ?? []);
-        $this->generateRoutes($this->data['routes'] ?? []);
+        $this->generateRoutes($this->data['controllers'] ?? []);
 
-        echo json_encode(["status" => "ok", "message" => "Files generated successfully!"]);
+        // Persist routes to disk
+        $this->saveRoutesToCache();
+
+        echo json_encode(["status" => "ok", "message" => "Files generated and routes saved successfully!"]);
     }
 
-    private function generateModels($models) {
+    private function generateModels(array $models) {
         foreach ($models as $model) {
             $className = ucfirst($model['name']);
             $tableName = $model['tableName'];
 
-            $template = "<?php\n\nnamespace App\Models;\n\nuse App\Models\Model;\n\nclass $className extends Model\n{\n    protected static \$table = '$tableName';\n    protected static \$primaryKey = 'id';\n}\n";
+            $template = <<<PHP
+                <?php
+                namespace App\Models;
+
+                use App\Models\Model;
+
+                class $className extends Model
+                {
+                    protected static \$table = '$tableName';
+                    protected static \$primaryKey = 'id';
+                }
+
+                PHP;
 
             file_put_contents($this->modelDir . $className . ".php", $template);
         }
     }
 
-    private function generateControllers($controllers) {
-    foreach ($controllers as $controller) {
-        $className = ucfirst($controller['name']);
-        $modelClass = "\\App\\Models\\" . $className;
-        $controllerClassName = $className . "Controller";
-        $template = "<?php\nnamespace App\Controllers;\n\nuse App\Controllers\Controller;\n\nclass $controllerClassName extends Controller {\n\npublic function __construct() {\nparent::__construct($modelClass);\n}\n\n}\n";
-        file_put_contents($this->controllerDir . $controllerClassName . ".php", $template);
+    private function generateControllers(array $controllers) {
+        foreach ($controllers as $controller) {
+            $className = ucfirst($controller['name']);
+            $modelClass = "\\App\\Models\\" . $className;
+            $controllerClassName = $className . "Controller";
+
+            $template = <<<PHP
+                <?php
+                namespace App\Controllers;
+
+                use App\Controllers\Controller;
+
+                class $controllerClassName extends Controller
+                {
+                    public function __construct()
+                    {
+                        parent::__construct("$modelClass");
+                    }
+                }
+
+                PHP;
+
+            file_put_contents($this->controllerDir . $controllerClassName . ".php", $template);
+        }
     }
-}
 
+    private function generateRoutes(array $controllers) {
+        // Load base Controller first
+        require_once __DIR__ . '/Controller.php';
 
-    private function generateRoutes($routes) {
-        $routeLines = "";
-        foreach ($routes as $route) {
-            $method = strtoupper($route['method']);
-            $path = $route['path'];
-            $action = $route['controller'];
-            $routeLines .= "\$router->add('$method', '$path', '$action');\n";
+        foreach ($controllers as $controller) {
+            $className = "\\App\\Controllers\\" . ucfirst($controller['name']) . "Controller";
+            $file = $this->controllerDir . ucfirst($controller['name']) . "Controller.php";
+
+            if (file_exists($file)) {
+                require_once $file; // load the generated controller
+            }
+
+            if (class_exists($className)) {
+                Routes::generateRoutes($className);
+            }
+        }
+    }
+
+    private function saveRoutesToCache() {
+        $routes = Routes::map();
+        file_put_contents(
+            $this->routeCacheFile,
+            '<?php return ' . var_export($routes, true) . ';'
+        );
+    }
+
+    public function checkCurrentRoutes() {
+        // Load cached routes if available
+        if (file_exists($this->routeCacheFile)) {
+            Routes::$routes = require $this->routeCacheFile;
         }
 
-        file_put_contents($this->routeFile, $routeLines, FILE_APPEND);
-    }
-
-    private function generateBasicMethods($name) {
-        
-    }
-
-    public function selectAll() {
-
-    }
-
-    public function select($id) {
-
-    }
-
-    public function create() {
-
-    }
-
-    public function update($id = null) {
-
-    }
-
-    public function delete($id = null) {
-
+        $routes = Routes::map();
+        var_dump($routes);
     }
 }

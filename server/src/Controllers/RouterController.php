@@ -7,6 +7,9 @@ use App\Types\Routes;
 class RouterController {
 
     public function handleRequest($url, $method){
+
+        Routes::init(__DIR__ . '/../Routes/routes_cache.php');
+
         //Retrieve all routes
         $routes = Routes::map();
 
