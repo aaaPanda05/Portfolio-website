@@ -6,7 +6,7 @@ use PDO;
 use PDOException;
 
 class Database {
-    private static $pdo = null;
+    private static $pool = [];
     private static $maxPoolSize = 5;
 
     public static function getConnection() {
