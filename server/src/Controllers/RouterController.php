@@ -8,6 +8,7 @@ class RouterController {
 
     public function handleRequest($url, $method){
 
+        //Initialize routes 
         Routes::init(__DIR__ . '/../Routes/routes_cache.php');
 
         //Retrieve all routes
