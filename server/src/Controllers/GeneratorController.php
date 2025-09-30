@@ -3,6 +3,9 @@ namespace App\Controllers;
 
 use App\Types\Routes;
 
+/**
+ * Controller responsible for generating models, controllers, and routes.
+ */
 class GeneratorController {
 
     private $modelDir;
@@ -10,12 +13,18 @@ class GeneratorController {
     private $routeCacheFile;
     private $data;
 
+    /**
+     * Constructor initializes directories and route cache file path.
+     */
     public function __construct() {
         $this->modelDir = realpath(__DIR__ . '/../Models') . '/';
         $this->controllerDir = realpath(__DIR__ . '/../Controllers') . '/';
         $this->routeCacheFile = realpath(__DIR__ . '/../Routes') . '/routes_cache.php';
     }
 
+    /**
+     * Main endpoint to generate models, controllers, and routes from JSON input.
+     */
     public function generate() {
         $this->data = json_decode(file_get_contents("php://input"), true);
 
@@ -35,6 +44,11 @@ class GeneratorController {
         echo json_encode(["status" => "ok", "message" => "Files generated and routes saved successfully!"]);
     }
 
+    /**
+     * Generate model PHP files based on the provided model definitions.
+     *
+     * @param array $models List of models to generate
+     */
     private function generateModels(array $models) {
         foreach ($models as $model) {
             $className = ucfirst($model['name']);
@@ -58,6 +72,11 @@ class GeneratorController {
         }
     }
 
+    /**
+     * Generate controller PHP files for the given models.
+     *
+     * @param array $controllers List of controllers to generate
+     */
     private function generateControllers(array $controllers) {
         foreach ($controllers as $controller) {
             $className = ucfirst($controller['name']);
@@ -84,6 +103,11 @@ class GeneratorController {
         }
     }
 
+    /**
+     * Generate routes for the given controllers.
+     *
+     * @param array $controllers List of controllers to register routes for
+     */
     private function generateRoutes(array $controllers) {
         // Load base Controller first
         require_once __DIR__ . '/Controller.php';
@@ -102,6 +126,9 @@ class GeneratorController {
         }
     }
 
+    /**
+     * Save current routes to the cache file.
+     */
     private function saveRoutesToCache() {
         $routes = Routes::map();
         file_put_contents(
@@ -110,6 +137,9 @@ class GeneratorController {
         );
     }
 
+    /**
+     * Output the currently registered routes (from cache if available).
+     */
     public function checkCurrentRoutes() {
         // Load cached routes if available
         if (file_exists($this->routeCacheFile)) {
