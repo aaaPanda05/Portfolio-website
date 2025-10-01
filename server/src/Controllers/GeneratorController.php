@@ -147,6 +147,11 @@ class GeneratorController {
         }
 
         $routes = Routes::map();
-        var_dump($routes);
+
+        // Return as JSON
+        header('Content-Type: application/json');
+        echo json_encode($routes);
+        exit; 
     }
+
 }

@@ -1,27 +1,29 @@
-// src/App.js
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
+import Dashboard from "./pages/Dashboard";
 import SwaggerDocs from "./pages/SwaggerDocs";
-
-function Home() {
-  return (
-    <div>
-      <h1>Welcome to my API Builder</h1>
-      <p>
-        <Link to="/docs">Go to API Documentation</Link>
-      </p>
-    </div>
-  );
-}
+import './App.css';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/docs" element={<SwaggerDocs />} />
-      </Routes>
-    </Router>
+    <div id="main-page">
+      {/* Sidebar */}
+      <aside className="sidebar">
+        <h2>API Builder</h2>
+        <nav>
+          <Link to="/">Dashboard</Link>
+          <Link to="/swagger"> API Documentation</Link>
+        </nav>
+      </aside>
+
+      {/* Main content */}
+      <main className="main-content">
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/swagger" element={<SwaggerDocs />} />
+        </Routes>
+      </main>
+    </div>
   );
 }
 
