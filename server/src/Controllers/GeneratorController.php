@@ -2,6 +2,7 @@
 namespace App\Controllers;
 
 use App\Types\Routes;
+use App\Database\Migration;
 
 /**
  * Controller responsible for generating models, controllers, and routes.
@@ -19,7 +20,10 @@ class GeneratorController {
     public function __construct() {
         $this->modelDir = realpath(__DIR__ . '/../Models') . '/';
         $this->controllerDir = realpath(__DIR__ . '/../Controllers') . '/';
-        $this->routeCacheFile = realpath(__DIR__ . '/../Routes') . '/routes_cache.php';
+        $this->routeCacheFile = __DIR__ . '/../Routes/routes_cache.php';
+        if (!file_exists(dirname($this->routeCacheFile))) {
+            mkdir(dirname($this->routeCacheFile), 0777, true); // create folder if missing
+        }
     }
 
     /**
@@ -37,10 +41,12 @@ class GeneratorController {
         $this->generateModels($this->data['models'] ?? []);
         $this->generateControllers($this->data['controllers'] ?? []);
         $this->generateRoutes($this->data['controllers'] ?? []);
+        Migration::createTable($this->data['table']['name'], $this->data['table']['columns']);
 
         // Persist routes to disk
         $this->saveRoutesToCache();
 
+        header('Content-Type: application/json');
         echo json_encode(["status" => "ok", "message" => "Files generated and routes saved successfully!"]);
     }
 

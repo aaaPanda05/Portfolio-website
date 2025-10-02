@@ -1,13 +1,11 @@
 import React from 'react';
-import RoutesList from '../components/RoutesList';
+import ResourceForm from '../components/ResourceForm';
 import '../css/dashboard.css';
 
 function Dashboard() {
 
     return (
-        <div>
-            <RoutesList></RoutesList>
-        </div>
+        <ResourceForm></ResourceForm>
     );
 }
 

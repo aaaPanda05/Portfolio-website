@@ -16,11 +16,12 @@ class Routes {
     // In-memory routes
     public static array $routes = [
         "GET" => [
-            "generator/generate" => [\App\Controllers\GeneratorController::class, "generate"],
             "generator/routes" => [\App\Controllers\GeneratorController::class, "checkCurrentRoutes"],
             "swagger/json"       => [\App\Controllers\SwaggerController::class, "json"]
         ],
-        "POST" => [],
+        "POST" => [
+            "generator/generate" => [\App\Controllers\GeneratorController::class, "generate"]
+        ],
         "PUT" => [],
         "DELETE" => []
     ];
