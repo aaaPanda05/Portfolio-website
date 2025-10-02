@@ -3,19 +3,32 @@ namespace App\Database;
 
 use App\Data\Database;
 use PDO;
+use Exception;
 
 class Migration {
+    /**
+     * Create a table from the given name and column definitions
+     *
+     * @param string $table
+     * @param array $columns Array of columns like:
+     *   [
+     *     ['name'=>'id','type'=>'int','required'=>true,'unique'=>true,'primary'=>true,'autoIncrement'=>true],
+     *     ['name'=>'name','type'=>'string','required'=>true]
+     *   ]
+     */
     public static function createTable(string $table, array $columns) {
         $pdo = Database::getConnection();
 
         $cols = [];
         $primaryKeys = [];
 
-        foreach ($columns as $name => $options) {
-            $col = "`$name`";
+        foreach ($columns as $options) {
+            // Use the actual column name
+            $colName = $options['name'];
+            $col = "`$colName`";
 
             // Type mapping
-            switch ($options['type']) {
+            switch (strtolower($options['type'])) {
                 case 'int':
                     $col .= " INT";
                     break;
@@ -29,16 +42,22 @@ class Migration {
                 case 'bool':
                     $col .= " TINYINT(1)";
                     break;
+                case 'date':
+                    $col .= " TIMESTAMP";
+                    break;
                 default:
-                    throw new \Exception("Unsupported type: " . $options['type']);
+                    throw new Exception("Unsupported type: " . $options['type']);
             }
 
             // Constraints
-            if (!empty($options['auto_increment'])) {
+            if (!empty($options['autoIncrement'])) {
                 $col .= " AUTO_INCREMENT";
             }
-            if (!empty($options['not_null'])) {
+            if (!empty($options['required'])) {
                 $col .= " NOT NULL";
+            }
+            if (!empty($options['unique'])) {
+                $col .= " UNIQUE";
             }
             if (isset($options['default'])) {
                 $default = is_string($options['default']) ? "'{$options['default']}'" : $options['default'];
@@ -49,14 +68,16 @@ class Migration {
 
             // Primary key
             if (!empty($options['primary'])) {
-                $primaryKeys[] = "`$name`";
+                $primaryKeys[] = "`$colName`";
             }
         }
 
+        // Add primary key definition
         if (!empty($primaryKeys)) {
             $cols[] = "PRIMARY KEY (" . implode(", ", $primaryKeys) . ")";
         }
 
+        // Build and execute SQL
         $sql = "CREATE TABLE IF NOT EXISTS `$table` (" . implode(", ", $cols) . ")";
         $pdo->exec($sql);
     }

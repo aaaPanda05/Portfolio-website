@@ -1,0 +1,28 @@
+/* App.css or SwaggerDocs.css */
+.swagger-container {
+  margin: 2rem;
+  background-color: #1e1e1e; /* match your dashboard background */
+  color: white; /* text color */
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+/* Swagger UI overrides */
+.swagger-container .swagger-ui .topbar,
+.swagger-container .swagger-ui .info,
+.swagger-container .swagger-ui .opblock,
+.swagger-container .swagger-ui .opblock-summary,
+.swagger-container .swagger-ui .responses-wrapper,
+.swagger-container .swagger-ui .opblock-body {
+  background-color: #2a2a2a !important;
+  color: white !important;
+}
+
+.swagger-container .swagger-ui a,
+.swagger-container .swagger-ui .opblock-summary-method {
+  color: #61dafb !important; /* link/method highlight */
+}
+
+.swagger-container .swagger-ui .opblock-description-wrapper {
+  color: #ccc !important;
+}

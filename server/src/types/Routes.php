@@ -16,10 +16,12 @@ class Routes {
     // In-memory routes
     public static array $routes = [
         "GET" => [
-            "generator/generate" => [\App\Controllers\GeneratorController::class, "generate"],
-            "generator/routes" => [\App\Controllers\GeneratorController::class, "checkCurrentRoutes"]
+            "generator/routes" => [\App\Controllers\GeneratorController::class, "checkCurrentRoutes"],
+            "swagger/json"       => [\App\Controllers\SwaggerController::class, "json"]
         ],
-        "POST" => [],
+        "POST" => [
+            "generator/generate" => [\App\Controllers\GeneratorController::class, "generate"]
+        ],
         "PUT" => [],
         "DELETE" => []
     ];
@@ -80,4 +82,60 @@ class Routes {
         }
         return self::$routes;
     }
+
+    /**
+     * Returns created JSON of routes for swagger
+     */
+    public static function toOpenApiJson() {
+        $spec = [
+            "openapi" => "3.0.0",
+            "info" => [
+                "title" => "My API",
+                "version" => "1.0.0"
+            ],
+            "paths" => []
+        ];
+
+        foreach (self::$routes as $method => $paths) {
+            foreach ($paths as $path => [$controller, $action]) {
+                $fullPath = "/" . ltrim($path, "/");
+
+                // Use Reflection to get docblock
+                $summary = '';
+                $description = '';
+                if (class_exists($controller) && method_exists($controller, $action)) {
+                    $reflection = new \ReflectionMethod($controller, $action);
+                    $docComment = $reflection->getDocComment();
+
+                    if ($docComment) {
+                        // Simple parsing: first line = summary, rest = description
+                        $lines = explode("\n", $docComment);
+                        $cleanLines = array_map(fn($line) => trim($line, " *\t\n\r\0\x0B/"), $lines);
+                        $cleanLines = array_filter($cleanLines); // remove empty lines
+
+                        if (!empty($cleanLines)) {
+                            $summary = array_shift($cleanLines);
+                            $description = implode(" ", $cleanLines);
+                        }
+                    }
+                }
+
+                // Fallback if no docblock
+                if (!$summary) $summary = "$controller::$action";
+
+                $spec["paths"][$fullPath][strtolower($method)] = [
+                    "summary" => $summary,
+                    "description" => $description,
+                    "responses" => [
+                        "200" => [
+                            "description" => "Successful response"
+                        ]
+                    ]
+                ];
+            }
+        }
+
+        return json_encode($spec, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    }
+
 }

@@ -1,0 +1,25 @@
+/* Routes component styling */
+.routes-container {
+  padding: 1rem;
+  color: white;
+}
+
+.routes-container h2 {
+  margin-bottom: 1rem;
+}
+
+.routes-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.routes-table th,
+.routes-table td {
+  border: 1px solid white;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.routes-table th {
+  background-color: #2a2a2a;
+}
