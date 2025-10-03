@@ -1,6 +1,5 @@
 import React from 'react';
 
-// sendResources.js
 const sendResources = async (data) => {
   try {
     console.log("Sending data:", data);
