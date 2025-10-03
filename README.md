@@ -17,6 +17,7 @@ If you want to use a newly written function of a controller, you will need to ad
 
 # Setup for the project
 
+Git clone the project from the develop branch. This is the most up to date version.
 Setup the project using Docker Compose: docker-compose up and make sure to copy the `.env-example` into a `.env` file. This sets the variables for your environment.
 
 ---
