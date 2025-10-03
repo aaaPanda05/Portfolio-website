@@ -3,7 +3,7 @@ import sendResources from "../api/sendResources.js";
 
 export default function ResourceForm() {
   const [modelName, setModelName] = useState("");
-  const [feedback, setFeedback] = useState(""); // new
+  const [feedback, setFeedback] = useState(""); 
   const [fields, setFields] = useState([
     { name: "", type: "string", required: false, unique: false },
   ]);
