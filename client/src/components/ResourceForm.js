@@ -45,6 +45,24 @@ export default function ResourceForm() {
 
     if (!modelName) return alert("Please enter a model name");
 
+    const names = fields.map(f => f.name.toLowerCase().trim());
+    const duplicates = names.filter((name, i) => names.indexOf(name) !== i);
+
+    // Duplicate column name check
+    if (duplicates.length > 0) {
+      setFeedback(
+        `❌ An error occurred: Duplicate column names found: ${[...new Set(duplicates)].join(", ")}`
+      );
+      return;
+    }
+
+    // Empty column name check
+    if (names.some(n => n === "")) {
+      setFeedback("❌ An error occurred: Empty columns");
+      return;
+    }
+
+
     const tableName = modelName.toLowerCase() + "s";
     const payload = {
       models: [{ name: modelName, tableName }],

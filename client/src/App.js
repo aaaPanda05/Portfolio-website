@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route, NavLink } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import SwaggerDocs from "./pages/SwaggerDocs";
+import Models from "./pages/Models";
 
 function App() {
   return (
@@ -41,6 +42,19 @@ function App() {
           >
             API Documentation
           </NavLink>
+          
+          <NavLink
+            to="/models"
+            className={({ isActive }) =>
+              `px-3 py-2 rounded-md font-medium transition-colors ${
+                isActive
+                  ? "bg-cyan-400 text-neutral-900"
+                  : "text-white hover:bg-neutral-800"
+              }`
+            }
+          >
+            Models
+          </NavLink>
         </nav>
 
         {/* Bottom section */}
@@ -54,6 +68,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/swagger" element={<SwaggerDocs />} />
+          <Route path="/models" element={<Models />} />
         </Routes>
       </main>
     </div>
