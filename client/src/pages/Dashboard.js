@@ -1,9 +1,9 @@
 import React from 'react';
-import ResourceForm from '../components/ResourceForm';
+import DatabaseForm from '../components/DatabaseForm';
 
 function Dashboard() {
     return (
-        <ResourceForm></ResourceForm>
+        <DatabaseForm></DatabaseForm>
     );
 }
 
