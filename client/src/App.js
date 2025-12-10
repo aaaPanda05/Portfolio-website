@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route, NavLink } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import SwaggerDocs from "./pages/SwaggerDocs";
-import Models from "./pages/Models";
+import Setup from "./pages/Setup";
 
 function App() {
   return (
@@ -44,7 +44,7 @@ function App() {
           </NavLink>
           
           <NavLink
-            to="/models"
+            to="/setup"
             className={({ isActive }) =>
               `px-3 py-2 rounded-md font-medium transition-colors ${
                 isActive
@@ -53,7 +53,7 @@ function App() {
               }`
             }
           >
-            Models
+            Setup
           </NavLink>
         </nav>
 
@@ -68,7 +68,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/swagger" element={<SwaggerDocs />} />
-          <Route path="/models" element={<Models />} />
+          <Route path="/setup" element={<Setup />} />
         </Routes>
       </main>
     </div>

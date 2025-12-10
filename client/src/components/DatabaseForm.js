@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import sendResources from "../api/sendResources.js";
 
-export default function DatabaseForm() {
+export default function DatabaseForm({onSave}) {
   const [databaseName, setDatabaseName] = useState("");
   const [feedback, setFeedback] = useState(""); 
   const [fields, setFields] = useState([
@@ -82,13 +82,12 @@ export default function DatabaseForm() {
     };
 
     
-    const { feedback } = await sendResources(payload);
-    setFeedback(feedback);
+    onSave(payload);
   };
 
   return (
     <div className="bg-neutral-900 text-white p-6 rounded-xl shadow-md w-full max-w-lg mx-auto">
-      <h2 className="text-xl font-semibold mb-6">Create Model</h2>
+      <h2 className="text-xl font-semibold mb-6">Setup database</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Database Name */}
         <div>
