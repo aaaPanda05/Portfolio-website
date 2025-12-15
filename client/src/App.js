@@ -1,6 +1,5 @@
 import React from "react";
 import { Routes, Route, NavLink } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
 import SwaggerDocs from "./pages/SwaggerDocs";
 import Setup from "./pages/Setup";
 
@@ -17,8 +16,7 @@ function App() {
         {/* Navigation */}
         <nav className="flex flex-col gap-2">
           <NavLink
-            to="/"
-            end
+            to="/setup"
             className={({ isActive }) =>
               `px-3 py-2 rounded-md font-medium transition-colors ${
                 isActive
@@ -27,9 +25,8 @@ function App() {
               }`
             }
           >
-            Dashboard
+            Setup
           </NavLink>
-
           <NavLink
             to="/swagger"
             className={({ isActive }) =>
@@ -42,19 +39,6 @@ function App() {
           >
             API Documentation
           </NavLink>
-          
-          <NavLink
-            to="/setup"
-            className={({ isActive }) =>
-              `px-3 py-2 rounded-md font-medium transition-colors ${
-                isActive
-                  ? "bg-cyan-400 text-neutral-900"
-                  : "text-white hover:bg-neutral-800"
-              }`
-            }
-          >
-            Setup
-          </NavLink>
         </nav>
 
         {/* Bottom section */}
@@ -66,9 +50,8 @@ function App() {
       {/* Main content */}
       <main className="flex-1 p-6 overflow-y-auto">
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/swagger" element={<SwaggerDocs />} />
           <Route path="/setup" element={<Setup />} />
+          <Route path="/swagger" element={<SwaggerDocs />} />
         </Routes>
       </main>
     </div>

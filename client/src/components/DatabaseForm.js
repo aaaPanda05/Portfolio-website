@@ -43,7 +43,7 @@ export default function DatabaseForm({onSave}) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!databaseName) return alert("Please enter a model name");
+    if (!databaseName) return alert("Please enter a database name");
 
     const names = fields.map(f => f.name.toLowerCase().trim());
     const duplicates = names.filter((name, i) => names.indexOf(name) !== i);
@@ -62,13 +62,9 @@ export default function DatabaseForm({onSave}) {
       return;
     }
 
-
-    const tableName = databaseName.toLowerCase() + "s";
     const payload = {
-      models: [{ name: databaseName, tableName }],
-      controllers: [{ name: databaseName }],
       table: {
-        name: tableName,
+        name: databaseName,
         columns: fields.map((field, idx) => ({
           name: field.name,
           type: mapToSQLType(field.type),

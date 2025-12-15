@@ -4,19 +4,20 @@ import DatabaseForm from '../components/DatabaseForm';
 
 function Setup() {
     const [modelControllerData, setModelControllerData] = useState({});
-    const [databaseData, setDatabaseData] = useState({});
     const [step, setStep] = useState(1); // current step
 
     const nextStep = () => setStep(prev => prev + 1);
-    const prevStep = () => setStep(prev => prev - 1);
 
-    const saveData = () => {
-        const payload = { ...modelControllerData, ...databaseData };
-        console.log("Final payload:", payload);
+    const handleDatabaseSave = (dbPayload) => {
+        const finalPayload = {
+            ...modelControllerData,
+            ...dbPayload,
+        };
 
-        // Example API call
-        // fetch("/api/submit", { method: "POST", body: JSON.stringify(payload) })
+        console.log("Final payload:", finalPayload);
+        // sendResources(finalPayload);
     };
+
 
     return (
         <div>
@@ -29,8 +30,7 @@ function Setup() {
 
             {step === 2 && (
                 <DatabaseForm
-                    onSave={setDatabaseData}
-                    saveData={saveData} 
+                    onSave={handleDatabaseSave}
                 />
             )}
         </div>

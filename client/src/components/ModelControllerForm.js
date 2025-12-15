@@ -167,7 +167,7 @@ export default function ModelControllerForm({onSave, onNext}) {
                     type="submit"
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md font-medium"
                 >
-                    Generate
+                    Next step
                 </button>
             </form>
 
