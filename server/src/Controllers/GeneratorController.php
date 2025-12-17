@@ -95,37 +95,49 @@ class GeneratorController {
         $controllerClassName = $className . "Controller";
 
         $propertyTemplate = '';
+        $methodTemplate = '';
 
         foreach ($properties as $property) {
             $propertyTemplate .= sprintf(
-                "%s \$%s;\n",
+                "    %s \$%s;\n",
                 $property['access'],
                 $property['name']
             );
         }
 
+        foreach ($methods as $method) {
+            $methodTemplate .= sprintf(
+                "\n    %s function %s()\n    {\n        //Place code here\n    }\n",
+                $method['access'],
+                $method['name']
+            );
+        }
 
-        $template = <<<PHP
+    $template = <<<PHP
     <?php
+
     namespace App\Controllers;
 
     use App\Controllers\Controller;
 
     class $controllerClassName extends Controller
     {
-
+    $propertyTemplate
         public function __construct()
         {
-            parent::__construct("$modelClass");
+            parent::__construct($modelClass::class);
         }
+    $methodTemplate
     }
     PHP;
 
         file_put_contents(
-            $this->controllerDir . $controllerClassName . ".php",
+            $this->controllerDir . $controllerClassName . '.php',
             $template
         );
     }
+
+
 
 
     /**

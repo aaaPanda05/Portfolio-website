@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import sendResources from "../api/sendResources.js";
 
 export default function DatabaseForm({onSave}) {
   const [databaseName, setDatabaseName] = useState("");
