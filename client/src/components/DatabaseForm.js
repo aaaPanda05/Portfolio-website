@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import sendResources from "../api/sendResources.js";
 
-export default function ResourceForm() {
-  const [modelName, setModelName] = useState("");
+export default function DatabaseForm({onSave}) {
+  const [databaseName, setDatabaseName] = useState("");
   const [feedback, setFeedback] = useState(""); 
   const [fields, setFields] = useState([
     { name: "", type: "string", required: false, unique: false },
@@ -43,14 +42,28 @@ export default function ResourceForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!modelName) return alert("Please enter a model name");
+    if (!databaseName) return alert("Please enter a database name");
 
-    const tableName = modelName.toLowerCase() + "s";
+    const names = fields.map(f => f.name.toLowerCase().trim());
+    const duplicates = names.filter((name, i) => names.indexOf(name) !== i);
+
+    // Duplicate column name check
+    if (duplicates.length > 0) {
+      setFeedback(
+        `❌ An error occurred: Duplicate column names found: ${[...new Set(duplicates)].join(", ")}`
+      );
+      return;
+    }
+
+    // Empty column name check
+    if (names.some(n => n === "")) {
+      setFeedback("❌ An error occurred: Empty columns");
+      return;
+    }
+
     const payload = {
-      models: [{ name: modelName, tableName }],
-      controllers: [{ name: modelName }],
       table: {
-        name: tableName,
+        name: databaseName,
         columns: fields.map((field, idx) => ({
           name: field.name,
           type: mapToSQLType(field.type),
@@ -64,21 +77,20 @@ export default function ResourceForm() {
     };
 
     
-    const { feedback } = await sendResources(payload);
-    setFeedback(feedback);
+    onSave(payload);
   };
 
   return (
     <div className="bg-neutral-900 text-white p-6 rounded-xl shadow-md w-full max-w-lg mx-auto">
-      <h2 className="text-xl font-semibold mb-6">Create Model</h2>
+      <h2 className="text-xl font-semibold mb-6">Setup database</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Model Name */}
+        {/* Database Name */}
         <div>
-          <label className="block text-sm font-medium mb-1">Model Name</label>
+          <label className="block text-sm font-medium mb-1">Database name</label>
           <input
             type="text"
-            value={modelName}
-            onChange={(e) => setModelName(e.target.value)}
+            value={databaseName}
+            onChange={(e) => setDatabaseName(e.target.value)}
             required
             className="w-full rounded-md bg-neutral-800 border border-neutral-700 p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             placeholder="e.g. User"
