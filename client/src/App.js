@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route, NavLink } from "react-router-dom";
 import SwaggerDocs from "./pages/SwaggerDocs";
 import Setup from "./pages/Setup";
+import FinalizeSetup from "./pages/FinalizeSetup";
 
 function App() {
   return (
@@ -39,6 +40,18 @@ function App() {
           >
             API Documentation
           </NavLink>
+          <NavLink
+            to="/finalizeSetup"
+            className={({ isActive }) =>
+              `px-3 py-2 rounded-md font-medium transition-colors ${
+                isActive
+                  ? "bg-cyan-400 text-neutral-900"
+                  : "text-white hover:bg-neutral-800"
+              }`
+            }
+          >
+            Finalize Setup
+          </NavLink>
         </nav>
 
         {/* Bottom section */}
@@ -52,6 +65,7 @@ function App() {
         <Routes>
           <Route path="/setup" element={<Setup />} />
           <Route path="/swagger" element={<SwaggerDocs />} />
+          <Route path="/finalizeSetup" element={<FinalizeSetup />} />
         </Routes>
       </main>
     </div>

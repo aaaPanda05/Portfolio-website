@@ -23,5 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 $url = isset($_GET['url']) ? rtrim($_GET['url'], '/') : ''; 
 $method = $_SERVER['REQUEST_METHOD'];
+
+if (str_starts_with($url, "__system")) {
+    $systemRouter = new \App\System\SystemRouter();
+    $systemRouter->handleRequest($url);
+    exit();
+}
+
 $router = new RouterController();
 $router->handleRequest($url, $method);

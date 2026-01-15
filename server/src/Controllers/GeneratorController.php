@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use App\Types\Routes;
 use App\Database\Migration;
+use App\Framework\ResponseHelper;
 
 /**
  * Controller responsible for generating models, controllers, and routes.
@@ -33,8 +34,7 @@ class GeneratorController {
         $this->data = json_decode(file_get_contents("php://input"), true);
 
         if (!$this->data) {
-            http_response_code(400);
-            echo json_encode(["error" => "Invalid JSON"]);
+            ResponseHelper::json(["error" => "Invalid JSON", 400]);
             return;
         }
 
@@ -54,8 +54,7 @@ class GeneratorController {
 
         $this->saveRoutesToCache();
 
-        header('Content-Type: application/json');
-        echo json_encode(["status" => "ok"]);
+        ResponseHelper::json(["status" => "ok"]);
     }
 
 
@@ -184,8 +183,7 @@ class GeneratorController {
         $routes = Routes::map();
 
         // Return as JSON
-        header('Content-Type: application/json');
-        echo json_encode($routes);
+        ResponseHelper::json($routes);
         exit; 
     }
 
