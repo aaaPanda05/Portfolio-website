@@ -4,6 +4,7 @@ namespace App\Controllers;
 use App\Types\Routes;
 use App\Database\Migration;
 use App\Framework\ResponseHelper;
+use App\System\SystemSetup;
 
 /**
  * Controller responsible for generating models, controllers, and routes.
@@ -53,6 +54,7 @@ class GeneratorController {
         );
 
         $this->saveRoutesToCache();
+        SystemSetup::createBackendConfig();
 
         ResponseHelper::json(["status" => "ok"]);
     }
