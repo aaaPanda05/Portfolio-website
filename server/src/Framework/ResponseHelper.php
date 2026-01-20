@@ -9,5 +9,9 @@ class ResponseHelper
         header('Content-Type: application/json');
         echo is_string($data) ? $data : json_encode($data);
     }
+
+    public static function getInput() {
+        return json_decode(file_get_contents('php://input'), true);
+    }
 }
 ?>

@@ -30,6 +30,27 @@ class SystemSetup {
         file_put_contents($path, $content);
     }
 
+    public static function finalizeSetup($plainPassword): void {
+        $path = self::BACKEND_CONFIG_FOLDER . 'backend.php';
+
+        if (!file_exists($path)) {
+            throw new \RuntimeException('System not initialized');
+        }
+
+        $config = require $path;
+
+        if (!empty($config['locked'])) {
+            throw new \RuntimeException('System already finalized');
+        }
+
+        $config['status'] = 'finalized';
+        $config['locked'] = true;
+        $config['admin_password_hash'] = password_hash($plainPassword, PASSWORD_DEFAULT);
+
+        $content = "<?php\n\nreturn " . var_export($config, true) . ";\n";
+        file_put_contents($path, $content);
+    }
+    
 }
 
 ?>
