@@ -14,15 +14,23 @@ class SystemController {
 
     public function finalize() {
         $input = ResponseHelper::getInput();
-        SystemSetup::finalizeSetup($input['password']);
+
+        if (!$input || !isset($input['password']) || !is_string($input['password']) || empty($input['password'])) {
+            http_response_code(400);
+            ResponseHelper::json(['error' => 'Password is required']);
+            return;
+        }
+
+        $plainPassword = $input['password'];
+
+        SystemSetup::finalizeSetup($plainPassword);
 
         ResponseHelper::json([
             'status' => 'finalized',
             'initialized' => true,
             'locked' => true,
-    ]);
-}
-
+        ]);
+    }
 }
 
 ?>

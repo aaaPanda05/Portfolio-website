@@ -19,12 +19,16 @@ async function finalizeSetup(password) {
     try {
         const response = await fetch(`${BASE_URL}/__system/finalize`, {
             method: "POST",
-            body: password,
+            body: {
+                "password": password
+            },
             headers: { "Content-Type": "application/json" },
         });
 
         const data = await response.json();
-        console.log(data)
+        if(data.locked) {
+            window.location.reload();
+        }
     } catch (error) {
         console.error("Error fetching system status:", error);
         throw error; 
