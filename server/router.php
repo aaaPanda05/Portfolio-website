@@ -10,6 +10,10 @@ $dotenv->load();
 
 require __DIR__ . '/config/config.php';
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 // --- CORS headers ---
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");

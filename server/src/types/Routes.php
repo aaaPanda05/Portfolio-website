@@ -17,7 +17,8 @@ class Routes {
     public static array $routes = [
         "GET" => [
             "generator/routes" => [\App\Controllers\GeneratorController::class, "checkCurrentRoutes"],
-            "swagger/json"       => [\App\Controllers\SwaggerController::class, "json"]
+            "swagger/json"       => [\App\Controllers\SwaggerController::class, "json"],
+            "auth/status" => [\App\Controllers\AuthController::class, "status"]
         ],
         "POST" => [
             "generator/generate" => [\App\Controllers\GeneratorController::class, "generate"]
